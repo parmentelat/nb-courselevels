@@ -1,0 +1,5 @@
+Type: IPython Notebook Extension
+Compatibility: 4.x, 5.x, 6.x
+Name: Color Cells by Level
+Main: index.js
+Description: tag cells as basic / intermediate / advanced

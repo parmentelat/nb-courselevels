@@ -1,0 +1,3 @@
+recursive-include jupyter-config *.json
+recursive-include nb_colorcells/static *.js
+include nb_colorcells/static/*.yaml
