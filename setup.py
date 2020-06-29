@@ -1,8 +1,8 @@
 import setuptools
 
 setuptools.setup(
-    name="nb_colorcells",
-    packages=['nb_colorcells'],
+    name="nb-courselevels",
+    packages=['courselevels'],
     version='0.0.1',
     include_package_data=True,
     install_requires=[
@@ -10,12 +10,12 @@ setuptools.setup(
     ],
     data_files=[
         # like `jupyter nbextension install --sys-prefix`
-        ("share/jupyter/nbextensions/nb_colorcells", [
-            "nb_colorcells/static/index.js", "nb_colorcells/static/nb-colorcells.yaml"
+        ("share/jupyter/nbextensions/courselevels", [
+            "courselevels/static/index.js", "courselevels/static/nb-courselevels.yaml"
         ]),
         # like `jupyter nbextension enable --sys-prefix`
         ("etc/jupyter/nbconfig/notebook.d", [
-            "jupyter-config/nbconfig/notebook.d/nb-colorcells.json"
+            "jupyter-config/nbconfig/notebook.d/nb-courselevels.json"
         ])
     ],
     zip_safe=False

@@ -1,9 +1,9 @@
-# nb_colorcells
+# courselevels
 Jupyter notebook extension for background colouring selected cells.
 
 Install via:
 
-`pip install nb-colorcells`
+`pip install nb-courselevels`
 
 The extension should be automatically installed and enabled.
 

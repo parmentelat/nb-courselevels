@@ -21,6 +21,9 @@ define(
      'base/js/events'],
 function (Jupyter, events) {
 
+    // the 'code' color is not yet implemented
+    // if would be about the div.CodeMirror
+    // underneath the div.cell[data-tag-level=true]
     let level_specs = {
         basic: {cell: "#D2FAD2", code: "lightgreen", icon: "hand-pointer-o"},
         intermediate: {cell: "#D2D2FB", code:"lightblue", icon: "hand-peace-o"},
@@ -76,11 +79,27 @@ function (Jupyter, events) {
         }
     }
 
+    function propagate_all_cells() {
+        Jupyter.notebook.get_cells().forEach(propagate);
+    }
+
     function compute_css() {
-        let css = ""
+        let css = `
+div.cell.selected,
+div.cell.jupyter-soft-selected {
+    background-image:
+        linear-gradient(rgba(255,255,255,.5) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(255,255,255,.5) 2px, transparent 2px),
+        linear-gradient(rgba(255,255,255,.28) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+`;
         for (let [level, details] of Object.entries(level_specs))
-            css += `div.cell[data-tag-${level}=true] {
-background-color: ${details.cell};
+            css += `
+div.cell[data-tag-${level}=true] {
+    background-color: ${details.cell};
 }
 `;
         console.log(css);
@@ -94,7 +113,7 @@ background-color: ${details.cell};
             document.getElementsByTagName("head")[0].appendChild(style);
         }
 
-        let module = 'nbcolorcells';
+        let module = 'courselevels';
 
         console.log("initializing ${module}")
 
@@ -113,6 +132,7 @@ background-color: ${details.cell};
 
         inject_css();
         create_menubar();
+        propagate_all_cells();
     }
 
     function load_jupyter_extension() {
