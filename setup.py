@@ -1,10 +1,17 @@
+#!/usr/bin/env python
+
 import setuptools
+
+with open("README.md") as feed:
+    LONG_DESCRIPTION = feed.read()
 
 setuptools.setup(
     name="nb-courselevels",
-    packages=['courselevels'],
-    version='0.0.1',
+    version='0.1.0',
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type = "text/markdown",
     include_package_data=True,
+    packages=['courselevels'],
     install_requires=[
         'notebook', 'jupyter_nbextensions_configurator'
     ],
