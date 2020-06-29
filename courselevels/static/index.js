@@ -94,15 +94,10 @@ function (Jupyter, events) {
 
     function compute_css() {
         let css = `
-div.cell.selected,
+/*div.cell.selected,*/
 div.cell.jupyter-soft-selected {
-    background-image:
-        linear-gradient(rgba(255,255,255,.5) 2px, transparent 2px),
-        linear-gradient(90deg, rgba(255,255,255,.5) 2px, transparent 2px),
-        linear-gradient(rgba(255,255,255,.28) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px);
-    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
-    background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+    background-image: 
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><path fill="%23080808" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"></path></svg>');
 }
 `;
         for (let [level, details] of Object.entries(level_specs))
