@@ -3,9 +3,9 @@
 // https://github.com/jupyterlab/jupyterlab/pull/8410
 // for starters we use this way of marking the cells
 //
-// metadata.tags.basic          present (= true) or absent
-// metadata.tags.intermediate   present (= true) or absent
-// metadata.tags.advanced       present (= true) or absent
+// metadata.tags.level_basic          
+// metadata.tags.level_intermediate   
+// metadata.tags.level_advanced       
 //
 // at most one should be present
 // 
@@ -21,24 +21,29 @@ define(
      'base/js/events'],
 function (Jupyter, events) {
 
-    // the 'code' color is not yet implemented
-    // if would be about the div.CodeMirror
-    // underneath the div.cell[data-tag-level=true]
+    let module = 'courselevels';
+
     let level_specs = {
-        basic: {cell: "#D2FAD2", code: "lightgreen", icon: "hand-pointer-o"},
-        intermediate: {cell: "#D2D2FB", code:"lightblue", icon: "hand-peace-o"},
-        advanced: {cell: "#F1D1D1", code: "lightred", icon: "hand-spock-o"},
+        level_basic: {cell: "#D2FAD2", icon: "hand-pointer-o", 
+            command_shortcut: "ctrl-x", edit_shortcut: "ctrl-x"},
+        level_intermediate: {cell: "#D2D2FB", icon: "hand-peace-o", 
+            command_shortcut: "ctrl-y", edit_shortcut: "ctrl-y"},
+        level_advanced: {cell: "#F1D1D1", icon: "hand-spock-o", 
+            command_shortcut: "ctrl-z", edit_shortcut: "ctrl-z"},
     };
 
     let levels = Object.keys(level_specs);
 
     function current_level(cell) {
-        if (! 'metadata' in cell) {
+        if (! ('metadata' in cell)) {
             return null;
         }
-        let metadata = cell.metadata;
+        if (! ('tags' in cell.metadata)) {
+            return null;
+        }
+        let tags = cell.metadata.tags;
         for (let level of levels) 
-            if (level in metadata)
+            if (tags.indexOf(level) >= 0)
                 return level;
         return null;
     }
@@ -48,14 +53,19 @@ function (Jupyter, events) {
         for (let cell of cells) {
             if (! ('metadata' in cell))
                 cell.metadata = {};
-            let metadata = cell.metadata;
-            if (! (level in metadata)) {
-                for (let otherlevel of levels) 
-                    if (otherlevel in metadata) 
-                        delete metadata[otherlevel];
-                metadata[level] = true;
+            if (! ('tags' in cell.metadata))
+                cell.metadata.tags = [];
+            let tags = cell.metadata.tags;
+            let level_index = tags.indexOf(level);
+            if (level_index < 0) {
+                for (let otherlevel of levels) {
+                    let otherlevel_index = tags.indexOf(otherlevel);
+                    if (otherlevel_index >= 0) 
+                        tags.splice(otherlevel_index)
+                }
+                tags.push(level);
             } else {
-                delete metadata[level];
+                tags.splice(level_index, 1);
             }
             propagate(cell);
         }
@@ -64,7 +74,6 @@ function (Jupyter, events) {
     function propagate(cell) {
         let level = current_level(cell);
         let element = cell.element;
-        console.log(element);
         function add_level_in_dom(level) {
             element.attr(`data-tag-${level}`, true);
         }
@@ -102,18 +111,33 @@ div.cell[data-tag-${level}=true] {
     background-color: ${details.cell};
 }
 `;
-        console.log(css);
         return css;
     }
 
-    function initialize () {
-        function inject_css () {
-            let style = document.createElement("style");
-            style.innerHTML = compute_css();
-            document.getElementsByTagName("head")[0].appendChild(style);
-        }
+    function inject_css () {
+        let style = document.createElement("style");
+        style.innerHTML = compute_css();
+        document.getElementsByTagName("head")[0].appendChild(style);
+    }
 
-        let module = 'courselevels';
+    function create_menubar() {
+        Jupyter.toolbar.add_buttons_group(actions);
+    }
+
+    function define_keyboard_shortcuts() {
+        let command_shortcuts = Jupyter.keyboard_manager.command_shortcuts;
+        let edit_shortcuts = Jupyter.keyboard_manager.edit_shortcuts;
+        for (let [level, details] of Object.entries(level_specs)) {
+            if ('command_shortcut' in details)
+                command_shortcuts.set_shortcut(
+                    details.command_shortcut, `${module}:toggle-${level}`);
+            if ('edit_shortcut' in details)
+                edit_shortcuts.set_shortcut(
+                    details.edit_shortcut, `${module}:toggle-${level}`);
+        }
+    }
+
+    function initialize() {
 
         console.log("initializing ${module}")
 
@@ -126,13 +150,11 @@ div.cell[data-tag-${level}=true] {
                 handler : () => toggle_level(level),
             }, `toggle-${level}`, module));
 
-        function create_menubar() {
-            Jupyter.toolbar.add_buttons_group(actions);
-        }
-
         inject_css();
-        create_menubar();
+        // apply initial status
         propagate_all_cells();
+        create_menubar();
+        define_keyboard_shortcuts();
     }
 
     function load_jupyter_extension() {
