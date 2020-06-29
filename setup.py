@@ -7,7 +7,7 @@ with open("README.md") as feed:
 
 setuptools.setup(
     name="nb-courselevels",
-    version='0.1.0',
+    version='0.1.1',
     long_description=LONG_DESCRIPTION,
     long_description_content_type = "text/markdown",
     include_package_data=True,
