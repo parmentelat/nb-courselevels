@@ -7,7 +7,9 @@ with open("README.md") as feed:
 
 setuptools.setup(
     name="nb-courselevels",
-    version='0.1.1',
+    version='0.1.2',
+    author="Thierry Parmentelat",
+    author_email="thierry.parmentelat@inria.fr",
     long_description=LONG_DESCRIPTION,
     long_description_content_type = "text/markdown",
     include_package_data=True,
