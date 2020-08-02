@@ -1,3 +1,7 @@
+# 0.2.0 2020 Aug 02
+
+* configurable to disable menubar buttons and keyboard shortcuts
+
 # 0.1.2 2020 Jul 22
 
 * author

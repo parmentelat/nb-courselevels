@@ -1,13 +1,21 @@
 #!/usr/bin/env python
 
 import setuptools
+from pathlib import Path
+
+VERSION_FILE = Path(__file__).parent / "courselevels" / "version.py"
+ENV = {}
+with VERSION_FILE.open() as f:
+    exec(f.read(), ENV)                                 # pylint: disable=w0122
+__version__ = ENV['__version__']
+
 
 with open("README.md") as feed:
     LONG_DESCRIPTION = feed.read()
 
 setuptools.setup(
     name="nb-courselevels",
-    version='0.1.2',
+    version=__version__,
     author="Thierry Parmentelat",
     author_email="thierry.parmentelat@inria.fr",
     long_description=LONG_DESCRIPTION,
