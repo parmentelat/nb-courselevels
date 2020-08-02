@@ -20,7 +20,7 @@ setuptools.setup(
     data_files=[
         # like `jupyter nbextension install --sys-prefix`
         ("share/jupyter/nbextensions/courselevels", [
-            "courselevels/static/index.js", "courselevels/static/nb-courselevels.yaml"
+            "courselevels/static/index.js", "courselevels/static/courselevels.yaml"
         ]),
         # like `jupyter nbextension enable --sys-prefix`
         ("etc/jupyter/nbconfig/notebook.d", [

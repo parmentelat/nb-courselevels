@@ -1,0 +1,25 @@
+Type: Jupyter Notebook Extension
+Compatibility: 6.x
+Name: Color Cells by Level
+Main: index.js
+Description: >
+  tag cells as basic / intermediate / advanced with related color code :
+  green / blue / red respectively
+Link: README.md
+
+# our parameters
+Parameters:
+- name: courselevels.create_menubar_buttons
+  description: >
+    when publishing a course we need the levels/colors to be displayed, but
+    the 3 icons on top for actually changing levels/colors are 
+    a hindrance
+  input_type: checkbox
+  default: yes
+- name: courselevels.define_keyboard_shortcuts
+  description: >
+    when publishing a course we need the levels/colors to be displayed, but
+    the 3 keyboard shortcuts only get students confused and need 
+    to be disabled
+  input_type: checkbox
+  default: yes

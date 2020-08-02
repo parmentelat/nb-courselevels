@@ -14,7 +14,7 @@
 //     data-tag-basic=1 ...>
 
 
-"using strict";
+"use strict";
 
 define(
     ['base/js/namespace', 
@@ -97,7 +97,7 @@ function (Jupyter, events) {
 /*div.cell.selected,*/
 div.cell.jupyter-soft-selected {
     background-image: 
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><path fill="%23080808" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"></path></svg>');
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4" viewBox="0 0 4 4"><path fill-opacity="0.4" d="M1 3h1v1H1V3zm2-2h1v1H3V1z"></path></svg>');
 }
 `;
         for (let [level, details] of Object.entries(level_specs))
@@ -115,7 +115,7 @@ div.cell[data-tag-${level}=true] {
         document.getElementsByTagName("head")[0].appendChild(style);
     }
 
-    function create_menubar() {
+    function create_menubar_buttons(actions) {
         Jupyter.toolbar.add_buttons_group(actions);
     }
 
@@ -136,20 +136,37 @@ div.cell[data-tag-${level}=true] {
 
         console.log("initializing ${module}")
 
-        actions = [];
-        for (let [level, details] of Object.entries(level_specs)) 
-            actions.push(
-                Jupyter.keyboard_manager.actions.register ({
-                    help : `Toggle ${level}`,
-                icon : `fa-${details.icon}`,
-                handler : () => toggle_level(level),
-            }, `toggle-${level}`, module));
+        let params = {
+            create_menubar_buttons: true,
+            define_keyboard_shortcuts: true,
+        }
 
-        inject_css();
-        // apply initial status
-        propagate_all_cells();
-        create_menubar();
-        define_keyboard_shortcuts();
+        let nbext_configurator = Jupyter.notebook.config;
+        nbext_configurator.load();
+
+        Promise.all([
+            nbext_configurator.loaded,
+        ]).then(()=>{
+            console.log("config", Jupyter.notebook.config);
+            $.extend(true, params, Jupyter.notebook.config.data.courselevels);
+            console.log("params", params);
+
+            let actions = [];
+            for (let [level, details] of Object.entries(level_specs)) 
+                actions.push(
+                    Jupyter.keyboard_manager.actions.register ({
+                        help : `Toggle ${level}`,
+                        icon : `fa-${details.icon}`,
+                        handler : () => toggle_level(level),
+                    }, `toggle-${level}`, module));
+    
+
+            inject_css();
+            // apply initial status
+            propagate_all_cells();
+            if (params.create_menubar_buttons) create_menubar_buttons(actions);
+            if (params.define_keyboard_shortcuts) define_keyboard_shortcuts();
+        });
     }
 
     function load_jupyter_extension() {
