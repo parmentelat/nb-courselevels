@@ -1,3 +1,8 @@
+# 0.3.0 2020 Aug 02
+
+* configurable colors
+* fix many inconsistencies in README
+
 # 0.2.0 2020 Aug 02
 
 * configurable to disable menubar buttons and keyboard shortcuts
