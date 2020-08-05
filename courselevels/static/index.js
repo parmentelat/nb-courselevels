@@ -24,12 +24,14 @@ function (Jupyter, events) {
     let module = 'courselevels';
 
     let level_specs = {
-        level_basic: {cell: "#D2FAD2", icon: "hand-pointer-o", 
-            command_shortcut: "ctrl-x", edit_shortcut: "ctrl-x"},
-        level_intermediate: {cell: "#D2D2FB", icon: "hand-peace-o", 
-            command_shortcut: "ctrl-y", edit_shortcut: "ctrl-y"},
-        level_advanced: {cell: "#F1D1D1", icon: "hand-spock-o", 
-            command_shortcut: "ctrl-z", edit_shortcut: "ctrl-z"},
+        // the 'color' field will be filled from configuration
+        // by initialize below
+        level_basic: {
+            icon: "hand-pointer-o", command_shortcut: "ctrl-x", edit_shortcut: "ctrl-x"},
+        level_intermediate: {
+            icon: "hand-peace-o", command_shortcut: "ctrl-y", edit_shortcut: "ctrl-y"},
+        level_advanced: {
+            icon: "hand-spock-o", command_shortcut: "ctrl-z", edit_shortcut: "ctrl-z"},
     };
 
     let levels = Object.keys(level_specs);
@@ -103,7 +105,7 @@ div.cell.jupyter-soft-selected {
         for (let [level, details] of Object.entries(level_specs))
             css += `
 div.cell[data-tag-${level}=true] {
-    background-color: ${details.cell};
+    background-color: ${details.color};
 }
 `;
         return css;
@@ -134,11 +136,15 @@ div.cell[data-tag-${level}=true] {
 
     function initialize() {
 
-        console.log("initializing ${module}")
+        console.log(`initializing ${module}`)
 
+        // mirroring the yaml file
         let params = {
             create_menubar_buttons: true,
             define_keyboard_shortcuts: true,
+            basic_color: "#d2fad2",
+            intermediate_color: "#d2d2fb",
+            advanced_color: "#f1d1d1",
         }
 
         let nbext_configurator = Jupyter.notebook.config;
@@ -147,19 +153,32 @@ div.cell[data-tag-${level}=true] {
         Promise.all([
             nbext_configurator.loaded,
         ]).then(()=>{
-            console.log("config", Jupyter.notebook.config);
+            // from nbconfig/notebook.json
+            // will be EMPTY at first, it does not expose the defaults 
+            // stored in YAML, hence the need to duplicate in the local params variable
+            // console.log("config.data.courselevels", Jupyter.notebook.config.data.courselevels);
+
+            // merge user-defined with defaults 
             $.extend(true, params, Jupyter.notebook.config.data.courselevels);
-            console.log("params", params);
+
+            // show merged config            
+            //console.log("params", params);
 
             let actions = [];
-            for (let [level, details] of Object.entries(level_specs)) 
+            for (let [level, details] of Object.entries(level_specs)) {
+                // extract e.g. basic or advanced
+                let name = level.split('_')[1];
+                let colorname = `${name}_color`;
+                let color = params[colorname];
+                // store configured color in level_specs in field 'color'
+                level_specs[level].color = color;
                 actions.push(
                     Jupyter.keyboard_manager.actions.register ({
                         help : `Toggle ${level}`,
                         icon : `fa-${details.icon}`,
                         handler : () => toggle_level(level),
                     }, `toggle-${level}`, module));
-    
+                }
 
             inject_css();
             // apply initial status

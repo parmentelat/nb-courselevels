@@ -23,3 +23,15 @@ Parameters:
     to be disabled
   input_type: checkbox
   default: yes
+- name: courselevels.basic_color
+  description: the color to use for cells marked basic
+  input_type: color
+  default: "#D2FAD2"
+- name: courselevels.intermediate_color
+  description: the color to use for cells marked intermediate
+  input_type: color
+  default: "#D2D2FB"
+- name: courselevels.advanced_color
+  description: the color to use for cells marked advanced
+  input_type: color
+  default: "#F1D1D1"
