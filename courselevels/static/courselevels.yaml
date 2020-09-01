@@ -18,11 +18,15 @@ Parameters:
   default: yes
 - name: courselevels.define_keyboard_shortcuts
   description: >
-    when publishing a course we need the levels/colors to be displayed, but
-    the 3 keyboard shortcuts only get students confused and need 
-    to be disabled
+    the extension comes with 3 jupyter actions, one for toggling each level,
+    that can be bound to keyboard shortcuts in your `custom.js`;
+    by default these actions are not bound to any keyboard shortcuts,
+    as it is of interest to authors mostly; 
+    if you enable this option, they will be bound to control-x, control-y 
+    and control-z respectively for basic, intermediate and advanced levels;
+    beware that control-z was a poor choice on windows/linux
   input_type: checkbox
-  default: yes
+  default: no
 - name: courselevels.basic_color
   description: the color to use for cells marked basic
   input_type: color
