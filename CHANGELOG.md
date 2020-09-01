@@ -1,3 +1,7 @@
+# 0.4.0 2020 Aug 02
+
+* keyboard shortcuts are turned off by default
+
 # 0.3.0 2020 Aug 02
 
 * configurable colors
