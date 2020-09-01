@@ -15,11 +15,16 @@ with open("README.md") as feed:
 
 setuptools.setup(
     name="nb-courselevels",
+    description="Jupyter nbextension to outline 3 course levels through colors",
     version=__version__,
     author="Thierry Parmentelat",
     author_email="thierry.parmentelat@inria.fr",
     long_description=LONG_DESCRIPTION,
     long_description_content_type = "text/markdown",
+    project_urls={
+        'source': 'https://github.com/parmentelat/nb-courselevels',
+#        'documentation': 'http://nb-courselevels.readthedocs.io/',
+    },
     include_package_data=True,
     packages=['courselevels'],
     install_requires=[
