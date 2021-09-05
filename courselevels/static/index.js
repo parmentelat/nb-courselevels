@@ -26,16 +26,13 @@ function (Jupyter, events) {
     const level_specs = {
         // the 'color' field will be filled from configuration
         // by initialize below
-        level_basic: {
-            icon: "hand-pointer-o", command_shortcut: "Ctrl-x", edit_shortcut: "Ctrl-x"},
-        level_intermediate: {
-            icon: "hand-peace-o", command_shortcut: "Ctrl-y", edit_shortcut: "Ctrl-y"},
-        level_advanced: {
-            icon: "hand-spock-o", command_shortcut: "Ctrl-z", edit_shortcut: "Ctrl-z"},
+        level_basic: { icon: "hand-pointer-o"},
+        level_intermediate: { icon: "hand-peace-o"},
+        level_advanced: { icon: "hand-spock-o"},
     }
     const FRAME_TAG = 'framed_cell'
-    const frame_specs = {
-        'frame' : { icon: "crop", command_shortcut: "Ctrl-o" },
+    const frame_specs = { 
+        'frame' : { icon: "crop"},
     }
     const all_specs = Object.entries(level_specs).concat(Object.entries(frame_specs))
 
@@ -155,22 +152,6 @@ div.cell[data-tag-frame=true] {
         Jupyter.toolbar.add_buttons_group(actions)
     }
 
-    function define_keyboard_shortcuts() {
-        const command_shortcuts = Jupyter.keyboard_manager.command_shortcuts
-        const edit_shortcuts = Jupyter.keyboard_manager.edit_shortcuts
-        for (let [level, details] of all_specs) {
-            if ('command_shortcut' in details) {
-                // console.log(`command shortcut for level ${level}`, details)
-                command_shortcuts.set_shortcut(
-                    details.command_shortcut, `${module}:toggle-${level}`)
-            }
-            if ('edit_shortcut' in details) {
-                edit_shortcuts.set_shortcut(
-                    details.edit_shortcut, `${module}:toggle-${level}`)
-            }
-        }
-    }
-
     function initialize() {
 
         console.log(`initializing ${module}`)
@@ -178,7 +159,6 @@ div.cell[data-tag-frame=true] {
         // mirroring the yaml file
         let params = {
             create_menubar_buttons: true,
-            define_keyboard_shortcuts: false,
             basic_color: "#d2fad2",
             intermediate_color: "#d2d2fb",
             advanced_color: "#f1d1d1",
@@ -215,7 +195,7 @@ div.cell[data-tag-frame=true] {
                         help : `Toggle ${level}`,
                         icon : `fa-${details.icon}`,
                         handler : () => toggle_level(level),
-                    }, `toggle-${level}`, module))
+                    }, `toggle-${name}`, module))
                 }
             frame_specs.frame.style = params.frame_style
             actions.push(
@@ -230,8 +210,6 @@ div.cell[data-tag-frame=true] {
             propagate_all_cells()
             if (params.create_menubar_buttons) 
                 create_menubar_buttons(actions)
-            if (params.define_keyboard_shortcuts) 
-                define_keyboard_shortcuts()
         })
     }
 

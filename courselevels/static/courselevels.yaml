@@ -5,6 +5,14 @@ Main: index.js
 Description: >
   tag cells as basic / intermediate / advanced with related color code :
   green / blue / red respectively
+
+  defines the following Jupyter actions that can be bound to keyboard shortcuts 
+  using either Jupyter classic's shortcuts editor (in the Help menu), or in your `custom.js`
+
+  * courselevels:toggle-basic
+  * courselevels:toggle-intrmediate
+  * courselevels:toggle-advanced
+  * courselevels:toggle-frame
 Link: README.md
 
 # our parameters
@@ -16,18 +24,6 @@ Parameters:
     a hindrance
   input_type: checkbox
   default: yes
-- name: courselevels.define_keyboard_shortcuts
-  description: >
-    the extension comes with jupyter actions
-    that can be bound to keyboard shortcuts in your own custom.js;
-    by default these actions are NOT bound to any keyboard shortcuts,
-    as it is of interest to authors mostly; 
-    if you enable this option, they will be bound to control-x, control-y 
-    and control-z respectively for basic, intermediate and advanced levels, and 
-    control-o for frame (command mode only)
-    beware that control-z was a poor choice on windows/linux
-  input_type: checkbox
-  default: no
 - name: courselevels.basic_color
   description: the color to use for cells marked basic
   input_type: color
