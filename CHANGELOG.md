@@ -1,3 +1,10 @@
+# 0.5.2 2021 Sep 05
+
+* normalize tags: avoid creating artificial changes
+  when creating an empty 'tags' stub in metadata
+* on the contrary, all empty tags get removed from metadata altogether
+  (this behaviour could be configurable in the future)
+
 # 0.5.1 2021 Sep 05
 
 * richer config, both levels and frame can be configured through 
