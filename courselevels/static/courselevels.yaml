@@ -24,6 +24,7 @@ Parameters:
     a hindrance
   input_type: checkbox
   default: yes
+
 - name: courselevels.basic_color
   description: the color to use for cells marked basic
   input_type: color
@@ -36,7 +37,24 @@ Parameters:
   description: the color to use for cells marked advanced
   input_type: color
   default: "#F1D1D1"
-- name: courselevels.frame_style
+
+  - name: courselevels.basic_style
+  description: additional CSS style for basic cells
+  input_type: string
+- name: courselevels.intermediate_style
+  description: additional CSS style for intermediate cells
+  input_type: string
+- name: courselevels.advanced_style
+  description: additional CSS style for advanced cells
+  input_type: string
+
+  
+- name: courselevels.frame_border
+  description: the CSS border to use for a framed cell
+  input_type: border
+  default: "3px ridge #400"
+
+  - name: courselevels.frame_style
   description: the CSS style to use for a framed cell
   input_type: str
-  default: "3px ridge #400"
+  default: ""

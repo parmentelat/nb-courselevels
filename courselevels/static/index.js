@@ -130,15 +130,9 @@ div.cell.jupyter-soft-selected {
 `
         for (let [level, details] of Object.entries(level_specs))
             css += `
-div.cell[data-tag-${level}=true] {
-    background-color: ${details.color};
-}
-`
+div.cell[data-tag-${level}=true] { background-color: ${details.color}; ${details.style}; }`
         css += `
-div.cell[data-tag-frame=true] {
-    border: ${frame_specs.frame.style};
-}
-`
+div.cell[data-tag-frame=true] { border: ${frame_specs.frame.border}; ${frame_specs.frame.style}; }`
         return css
     }
 
@@ -160,9 +154,13 @@ div.cell[data-tag-frame=true] {
         let params = {
             create_menubar_buttons: true,
             basic_color: "#d2fad2",
+            basic_style: "",
             intermediate_color: "#d2d2fb",
+            intermediate_style: "",
             advanced_color: "#f1d1d1",
-            frame_style: "3px ridge #400",
+            advanced_style: "",
+            frame_border: "3px ridge #400",
+            frame_style: "",
         }
 
         let nbext_configurator = Jupyter.notebook.config
@@ -186,10 +184,9 @@ div.cell[data-tag-frame=true] {
             for (let [level, details] of Object.entries(level_specs)) {
                 // extract e.g. basic or advanced
                 let name = level.split('_')[1]
-                let colorname = `${name}_color`
-                let color = params[colorname]
                 // store configured color in level_specs in field 'color'
-                level_specs[level].color = color
+                level_specs[level].color = params[`${name}_color`]
+                level_specs[level].style = params[`${name}_style`]
                 actions.push(
                     Jupyter.keyboard_manager.actions.register ({
                         help : `Toggle ${level}`,
@@ -197,8 +194,9 @@ div.cell[data-tag-frame=true] {
                         handler : () => toggle_level(level),
                     }, `toggle-${name}`, module))
                 }
-            frame_specs.frame.style = params.frame_style
-            actions.push(
+                frame_specs.frame.border = params.frame_border
+                frame_specs.frame.style = params.frame_style
+                actions.push(
                 Jupyter.keyboard_manager.actions.register({
                     help: `Toggle frame around cell`,
                     icon: `fa-${frame_specs.frame.icon}`,
