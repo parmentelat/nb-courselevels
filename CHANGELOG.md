@@ -1,3 +1,8 @@
+# 0.5.1 2021 Sep 05
+
+* richer config, both levels and frame can be configured through 
+  a native config (color for levels, border for frame) + a free css style 
+
 # 0.5.0 2021 Sep 05
 
 * support for framed cells
