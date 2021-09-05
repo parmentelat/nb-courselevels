@@ -1,3 +1,7 @@
+# 0.5.0 2021 Sep 05
+
+* support for framed cells
+
 # 0.4.0 2020 Aug 02
 
 * keyboard shortcuts are turned off by default
