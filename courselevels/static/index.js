@@ -52,11 +52,27 @@ function (Jupyter, events) {
         return null
     }
 
+    function has_no_tags(cell) {
+        if (! ('metadata' in cell)) {
+            return true
+        }
+        if (! ('tags' in cell.metadata)) {
+            return true
+        }
+        /* take this chance to normalize; if no tags, then no tags */
+        if (cell.metadata.tags.length == 0) {
+            delete cell.metadata.tags
+            return true
+        }
+        return false
+    }
     function get_tags(cell) {
-        if (! ('metadata' in cell))
+        if (! ('metadata' in cell)) {
             cell.metadata = {}
-        if (! ('tags' in cell.metadata))
+        }
+        if (! ('tags' in cell.metadata)) {
             cell.metadata.tags = []
+        }
         return cell.metadata.tags
     }
     function has_tag(cell, tag) {
@@ -96,7 +112,16 @@ function (Jupyter, events) {
         }
     }
 
+    /* 
+    skip if no tags; otherwise the extension pollutes
+    all the cells by adding a spurrious empty tags stub
+    */
     function propagate(cell) {
+        console.log('propagating', cell)
+        if (has_no_tags(cell)) {
+            return
+        }
+        console.log('going on', cell)
         let level = current_level(cell)
         let element = cell.element
         for (let otherlevel of levels) {
