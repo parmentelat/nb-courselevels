@@ -1,3 +1,8 @@
+# 0.5.3 2021 Sep 05
+
+* clean_empty_tags a new config option
+* bugfix, 0.5.2 was indeed broken  
+
 # 0.5.2 2021 Sep 05
 
 * normalize tags: avoid creating artificial changes
