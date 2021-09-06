@@ -91,6 +91,12 @@ function (Jupyter, events) {
         return cell.metadata.tags
     }
     function has_tag(cell, tag) {
+        if (! ('metadata' in cell)) {
+            return false
+        }
+        if (! ('tags' in cell.metadata)) {
+            return false
+        }
         return cell.metadata.tags.includes(tag)
     }
     function add_tag(cell, tag) {
@@ -127,10 +133,6 @@ function (Jupyter, events) {
         }
     }
 
-    /* 
-    skip if no tags; otherwise the extension pollutes
-    all the cells by adding a spurrious empty tags stub
-    */
     function propagate(cell) {
         if (global_config.clean_empty_tags)
             clean_empty_tags(cell)
@@ -142,10 +144,11 @@ function (Jupyter, events) {
             else
                 element.removeAttr(`data-tag-${otherlevel}`)
         }
-        if (get_tags(cell).includes(FRAME_TAG))
+        if (has_tag(cell, FRAME_TAG)) {
             element.attr(`data-tag-frame`, true)
-        else
+        } else {
             element.removeAttr(`data-tag-frame`)
+        }
     }
 
     function propagate_all_cells() {
