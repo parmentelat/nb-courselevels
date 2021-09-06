@@ -1,3 +1,7 @@
+# 0.5.4 2021 Sep 05
+
+* hopefully last bugfix
+
 # 0.5.3 2021 Sep 05
 
 * clean_empty_tags a new config option
