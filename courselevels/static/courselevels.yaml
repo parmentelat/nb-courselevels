@@ -25,6 +25,12 @@ Parameters:
   input_type: checkbox
   default: yes
 
+- name: courselevels.clean_empty_tags
+  description: >
+    if set, the extension will remove the 'tags' entry from each cell metadata where no tag remains
+  input_type: checkbox
+  default: yes
+
 - name: courselevels.basic_color
   description: the color to use for cells marked basic
   input_type: color
@@ -48,7 +54,7 @@ Parameters:
   description: additional CSS style for advanced cells
   input_type: string
 
-  
+
 - name: courselevels.frame_border
   description: the CSS border to use for a framed cell
   input_type: border

@@ -38,6 +38,23 @@ function (Jupyter, events) {
 
     let levels = Object.keys(level_specs)
 
+    // Jupyter.notebook.config.data.courselevels 
+    // contains the yaml file, except for the default values
+    // hence the need to DUPLICATE here the defaults from the yaml file
+    let global_config = {
+            create_menubar_buttons: true,
+            clean_empty_tags: true,
+            basic_color: "#d2fad2",
+            basic_style: "",
+            intermediate_color: "#d2d2fb",
+            intermediate_style: "",
+            advanced_color: "#f1d1d1",
+            advanced_style: "",
+            frame_border: "3px ridge #400",
+            frame_style: "",
+        }
+
+
     function current_level(cell) {
         if (! ('metadata' in cell)) {
             return null
@@ -52,19 +69,17 @@ function (Jupyter, events) {
         return null
     }
 
-    function has_no_tags(cell) {
+    function clean_empty_tags(cell) {
         if (! ('metadata' in cell)) {
-            return true
+            return
         }
         if (! ('tags' in cell.metadata)) {
-            return true
+            return
         }
         /* take this chance to normalize; if no tags, then no tags */
         if (cell.metadata.tags.length == 0) {
             delete cell.metadata.tags
-            return true
         }
-        return false
     }
     function get_tags(cell) {
         if (! ('metadata' in cell)) {
@@ -117,11 +132,8 @@ function (Jupyter, events) {
     all the cells by adding a spurrious empty tags stub
     */
     function propagate(cell) {
-        console.log('propagating', cell)
-        if (has_no_tags(cell)) {
-            return
-        }
-        console.log('going on', cell)
+        if (global_config.clean_empty_tags)
+            clean_empty_tags(cell)
         let level = current_level(cell)
         let element = cell.element
         for (let otherlevel of levels) {
@@ -175,32 +187,15 @@ div.cell[data-tag-frame=true] { border: ${frame_specs.frame.border}; ${frame_spe
 
         console.log(`initializing ${module}`)
 
-        // mirroring the yaml file
-        let params = {
-            create_menubar_buttons: true,
-            basic_color: "#d2fad2",
-            basic_style: "",
-            intermediate_color: "#d2d2fb",
-            intermediate_style: "",
-            advanced_color: "#f1d1d1",
-            advanced_style: "",
-            frame_border: "3px ridge #400",
-            frame_style: "",
-        }
-
         let nbext_configurator = Jupyter.notebook.config
         nbext_configurator.load()
 
         Promise.all([
             nbext_configurator.loaded,
         ]).then(()=>{
-            // from nbconfig/notebook.json
-            // will be EMPTY at first, it does not expose the defaults 
-            // stored in YAML, hence the need to duplicate in the local params variable
-            // console.log("config.data.courselevels", Jupyter.notebook.config.data.courselevels)
 
             // merge user-defined with defaults 
-            $.extend(true, params, Jupyter.notebook.config.data.courselevels)
+            $.extend(true, global_config, Jupyter.notebook.config.data.courselevels)
 
             // show merged config            
             //console.log("params", params)
@@ -210,8 +205,8 @@ div.cell[data-tag-frame=true] { border: ${frame_specs.frame.border}; ${frame_spe
                 // extract e.g. basic or advanced
                 let name = level.split('_')[1]
                 // store configured color in level_specs in field 'color'
-                level_specs[level].color = params[`${name}_color`]
-                level_specs[level].style = params[`${name}_style`]
+                level_specs[level].color = global_config[`${name}_color`]
+                level_specs[level].style = global_config[`${name}_style`]
                 actions.push(
                     Jupyter.keyboard_manager.actions.register ({
                         help : `Toggle ${level}`,
@@ -219,8 +214,8 @@ div.cell[data-tag-frame=true] { border: ${frame_specs.frame.border}; ${frame_spe
                         handler : () => toggle_level(level),
                     }, `toggle-${name}`, module))
                 }
-                frame_specs.frame.border = params.frame_border
-                frame_specs.frame.style = params.frame_style
+                frame_specs.frame.border = global_config.frame_border
+                frame_specs.frame.style = global_config.frame_style
                 actions.push(
                 Jupyter.keyboard_manager.actions.register({
                     help: `Toggle frame around cell`,
@@ -231,7 +226,7 @@ div.cell[data-tag-frame=true] { border: ${frame_specs.frame.border}; ${frame_spe
             inject_css()
             // apply initial status
             propagate_all_cells()
-            if (params.create_menubar_buttons) 
+            if (global_config.create_menubar_buttons) 
                 create_menubar_buttons(actions)
         })
     }
